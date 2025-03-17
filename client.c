@@ -6,7 +6,7 @@
 /*   By: dario <dario@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:05:00 by dario             #+#    #+#             */
-/*   Updated: 2025/03/17 16:07:49 by dario            ###   ########.fr       */
+/*   Updated: 2025/03/17 17:29:34 by dario            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	send_char(pid_t server_pid, char c)
 			signal_kill(server_pid, SIGUSR2);
 		++bit;
 		while (g_server_pid == BUSY)
-			usleep(50);
+			pause();
 		g_server_pid = BUSY;
 	}
 }
@@ -64,13 +64,13 @@ int	main(int argc, char **argv)
 	const char	*msg;
 	pid_t		pid;
 
+	create_signal(SIGUSR1, ack_handler, false);
+	create_signal(SIGUSR2, end_handler, false);
 	if (argc != 3)
 		error_exit("Client:\n"
 			"Execute like this: ./client <SERVER_PID> <MESSAGE>\n");
 	if (!pid_check(argv[1]))
-		error_exit("Client:\nServer PID must contain digits only");
-	create_signal(SIGUSR1, ack_handler, false);
-	create_signal(SIGUSR2, end_handler, false);
+	error_exit("Client:\nServer PID must contain digits only");
 	msg = argv[2];
 	pid = ft_atoi(argv[1]);
 	ft_printf("Client:\n"
