@@ -6,11 +6,24 @@
 /*   By: dario <dario@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:05:00 by dario             #+#    #+#             */
-/*   Updated: 2025/03/17 11:26:21 by dario            ###   ########.fr       */
+/*   Updated: 2025/03/17 13:48:20 by dario            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+volatile sig_atomic_t	g_server_pid = BUSY;
+
+static void	ack_handler(void)
+{
+	g_server_pid = READY;
+}
+
+static void	end_handler(void)
+{
+	ft_printf("\tMessage received\n");
+	exit(0);
+}
 
 void	send_char(pid_t server_pid, char c)
 {
@@ -20,11 +33,13 @@ void	send_char(pid_t server_pid, char c)
 	while (bit < BIT_SIZE)
 	{
 		if (c & (0x80) >> bit)
-			ft_kill(server_pid, SIGUSR1);
+			signal_kill(server_pid, SIGUSR1);
 		else
-			ft_kill(server_pid, SIGUSR2);
+			signal_kill(server_pid, SIGUSR2);
 		++bit;
-		usleep(10000);
+		while(g_server_pid == BUSY)
+			usleep(50);
+		g_server_pid = BUSY;
 	}
 }
 
@@ -60,15 +75,16 @@ int	main(int argc, char **argv)
 	pid_t		pid;
 
 	if (argc != 3)
-	{
-		ft_printf("Modo de ejecución: %s <PID_SERVIDOR> <MENSAJE>\n", argv[0]);
-		exit(1);
-	}
+		error_exit("Client:\n"
+			"Execute like this: ./client <SERVER_PID> <MESSAGE>\n");
 	msg = argv[2];
 	if (!pid_check(argv[1]))
-		error_exit("El PID debe estar formado únicamente por dígitos");
+		error_exit("Server PID must contain digits only");
 	pid = ft_atoi(argv[1]);
-	ft_printf("Cliente: Enviando mensaje \"%s\" al servidor %d\n", msg, pid);
+	create_signal(SIGUSR1, ack_handler, false);
+	create_signal(SIGUSR2, end_handler, false);
+	ft_printf("Client:\n"
+		"Sending message \"%s\" to server %d\n", msg, pid);
 	send_msg(pid, msg);
 	return (0);
 }

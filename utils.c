@@ -6,7 +6,7 @@
 /*   By: dario <dario@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:05:07 by dario             #+#    #+#             */
-/*   Updated: 2025/03/17 11:19:41 by dario            ###   ########.fr       */
+/*   Updated: 2025/03/17 13:12:09 by dario            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,21 @@ char	*error_exit(const char *error_message)
 	exit(1);
 }
 
-void	ft_kill(pid_t pid, int signo)
+void	signal_kill(pid_t pid, int signo)
 {
 	if (kill(pid, signo) < 0)
-		error_exit("Kill ha fallado");
+		error_exit("Signal kill failed");
+}
+
+void	create_signal(int signo, void *handler, bool siginfo)
+{
+	struct sigaction	sa;
+	sa.sa_sigaction = handler;
+	if (siginfo)
+		sa.sa_flags = SA_SIGINFO;
+	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+	sigaddset(&sa.sa_mask, SIGUSR2);
+	if (sigaction(signo, &sa, NULL) < 0)
+		error_exit("Sigaction failed");
 }
