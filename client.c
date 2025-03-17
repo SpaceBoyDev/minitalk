@@ -6,7 +6,7 @@
 /*   By: dario <dario@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:05:00 by dario             #+#    #+#             */
-/*   Updated: 2025/03/17 17:29:34 by dario            ###   ########.fr       */
+/*   Updated: 2025/03/17 21:34:45 by dario            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	main(int argc, char **argv)
 		error_exit("Client:\n"
 			"Execute like this: ./client <SERVER_PID> <MESSAGE>\n");
 	if (!pid_check(argv[1]))
-	error_exit("Client:\nServer PID must contain digits only");
+		error_exit("Client:\nServer PID must contain digits only");
 	msg = argv[2];
 	pid = ft_atoi(argv[1]);
 	ft_printf("Client:\n"
