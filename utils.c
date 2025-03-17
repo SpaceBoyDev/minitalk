@@ -6,7 +6,7 @@
 /*   By: dario <dario@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:05:07 by dario             #+#    #+#             */
-/*   Updated: 2025/03/17 13:12:09 by dario            ###   ########.fr       */
+/*   Updated: 2025/03/17 15:47:58 by dario            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	signal_kill(pid_t pid, int signo)
 void	create_signal(int signo, void *handler, bool siginfo)
 {
 	struct sigaction	sa;
+
 	sa.sa_sigaction = handler;
 	if (siginfo)
 		sa.sa_flags = SA_SIGINFO;
