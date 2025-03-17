@@ -77,8 +77,30 @@ fclean: clean
 re: fclean all
 
 norme:
-	@echo "$(CIAN)SOURCES$(COLOREND)"
-	@for file in $(SRCS); do \
+	@echo "$(CIAN)SOURCES COMMON$(COLOREND)"
+	@for file in $(SRCS_COMMON); do \
+		norminette $$file | grep "OK!" > /dev/null; \
+		if [ $$? -eq 0 ]; then \
+			echo "$(GREEN)$$file: OK!$(COLOREND)"; \
+		else \
+			echo "$(RED)"; \
+			norminette $$file; \
+			echo "$(COLOREND)"; \
+		fi \
+	done
+	@echo "$(CIAN)SOURCES SERVER$(COLOREND)"
+	@for file in $(SRCS_SERVER); do \
+		norminette $$file | grep "OK!" > /dev/null; \
+		if [ $$? -eq 0 ]; then \
+			echo "$(GREEN)$$file: OK!$(COLOREND)"; \
+		else \
+			echo "$(RED)"; \
+			norminette $$file; \
+			echo "$(COLOREND)"; \
+		fi \
+	done
+	@echo "$(CIAN)SOURCES CLIENT$(COLOREND)"
+	@for file in $(SRCS_CLIENT); do \
 		norminette $$file | grep "OK!" > /dev/null; \
 		if [ $$? -eq 0 ]; then \
 			echo "$(GREEN)$$file: OK!$(COLOREND)"; \
