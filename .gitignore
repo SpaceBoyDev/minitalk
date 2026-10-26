@@ -1,0 +1,6 @@
+*.o
+*.a
+server
+client
+push_swap
+so_long
